@@ -1,4 +1,4 @@
-package com.jodae.example.models;
+package com.jodae.example.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SomeModel {
+public class SomeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

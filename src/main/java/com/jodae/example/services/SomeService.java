@@ -1,46 +1,44 @@
 package com.jodae.example.services;
 
-import com.jodae.example.models.SomeModel;
+import com.jodae.example.entities.SomeEntity;
+import com.jodae.example.exceptions.ResourceNotAcceptableException;
+import com.jodae.example.exceptions.ResourceNotFoundException;
 import com.jodae.example.repositories.SomeRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 @Service
 public class SomeService {
 
     @Autowired
     SomeRepository someRepository;
 
-    public List<SomeModel> findAll(){
+    public List<SomeEntity> findAll() {
         return someRepository.findAll();
     }
 
-    public SomeModel findById(Integer id) {
+    public SomeEntity findById(Integer id) {
         return someRepository.findById(id).orElse(null);
     }
 
-    public SomeModel add(SomeModel something) throws IllegalArgumentException {
-        if (someRepository.existsByName(something.getName())) {
-            throw new IllegalArgumentException("Name already exists!");
-        } else {
+    public SomeEntity add(SomeEntity something) {
+        try {
             return someRepository.save(something);
+        } catch (Exception ex) {
+            throw new ResourceNotAcceptableException("Name empty or name already exists !");
         }
     }
 
     @Transactional
-    public String deleteByName(String name)throws IllegalArgumentException {
+    public String deleteByName(String name) {
         if (someRepository.existsByName(name)) {
-            Integer id = someRepository.getByName(name).getId();
             someRepository.deleteByName(name);
-            return "Element with id " + id + " deleted!";
+            return "Element with name " + name + " deleted!";
         } else {
-            throw new IllegalArgumentException("Not found!");
+            throw new ResourceNotFoundException("Name not found !");
         }
     }
 }
